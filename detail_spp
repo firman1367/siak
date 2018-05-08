@@ -1,0 +1,70 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-success box-solid no-border">
+            <div class="box-header">
+                <h3 class="box-title"><i class="fa fa-table"></i> Detail Nilai</h3>
+                <div class="box-tools">
+                    <button class="btn btn-box-tool" data-toggle="tooltip" data-widget="collapse" title="hide"><i class="fa fa-minus"></i></button>
+                    <button class="btn btn-box-tool" data-toggle="tooltip" data-widget="collapse" title="remove"><i class="fa fa-times"></i></button>
+                </div>
+            </div>
+            <div class="box-body">
+                <?php
+                    if (isset($_GET['detail-nilai'])) {
+                        $id_kelas = $_GET['detail-nilai'];
+                        $query = mysql_query("SELECT id_kelas,nama_kelas FROM kelas WHERE id_kelas=".$id_kelas);
+                        $data_kelas = mysql_fetch_array($query);
+                    }
+                ?>
+                <p><b>Nama Kelas : <?php echo $data_kelas['nama_kelas']; ?></b></p>
+                <div class="table-responsive no-peading">
+                    <table class="table table-hover table-striped table-bordered">
+                        <thead>
+                            <th class="text-center bg-green" width="6%" rowspan="2" style="padding-bottom:50px;color:white;">No.</th>
+                            <th class="text-center bg-green" width="20%" rowspan="2" style="padding-bottom:50px;color:white;">Nama Siswa</th>
+                            <th class="text-center bg-green" colspan="13" style="color:white;">Mata Pelajaran
+                                <tr>
+                                    <?php
+                                        $query1 = mysql_query("SELECT c.nilai, a.nama_kelas, d.nama_mapel, c.id_mapel FROM nilai AS c
+                                                                INNER JOIN kelas AS a USING(id_kelas)
+                                                                inner join mapel AS d USING(id_mapel)
+                                                                WHERE a.id_kelas =$id_kelas
+                                                                GROUP BY c.id_mapel");
+                                        while($data1 = mysql_fetch_array($query1)){
+                                    ?>
+                                    <td class="text-center" style="background-color:rgb(218, 218, 217);font-weight:bold;"><?php echo $data1['nama_mapel'] ?></td>
+                                    <?php } ?>
+                                </tr>
+                            </th>
+                        </thead>
+                        <tbody>
+                            <?php
+                                $nomer = 1;
+                                $query2 = mysql_query("SELECT a.id_kelas, b.nama_siswa, b.id_siswa , c.id_mapel, c.id_nilai, c.nilai FROM nilai AS c
+                                                       INNER JOIN kelas AS a USING(id_kelas)
+                                                       INNER JOIN siswa AS b USING(id_siswa)
+                                                       WHERE a.id_kelas = $data_kelas[0]
+                                                       GROUP BY b.id_siswa");
+                                while($data2 = mysql_fetch_array($query2)){
+                            ?>
+                            <tr>
+                                <td><?php echo $nomer++; ?></td>
+                                <td><?php echo $data2['nama_siswa']; ?></td>
+                                <?php
+                                    $query3 = mysql_query("SELECT a.id_kelas, b.nama_siswa, c.id_mapel, c.id_nilai, c.nilai FROM nilai AS c
+                                                           INNER JOIN kelas AS a USING(id_kelas)
+                                                           INNER JOIN siswa AS b USING(id_siswa)
+                                                           WHERE c.id_mapel GROUP BY c.id_mapel");
+                                    while($data3 = mysql_fetch_array($query3)){
+                                ?>
+                                <td class="text-center" style="background-color:rgb(218, 218, 217);font-weight:bold;"><?php echo $data2['nilai'] ?></td>
+                                <?php } ?>
+                            </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

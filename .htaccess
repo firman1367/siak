@@ -1,0 +1,6 @@
+RewriteEngine on
+
+RewriteRule ^home$ ahp.php?page=home [L]
+RewriteRule ^setting.html$ ahp.php?page=setting [L]
+
+Options All -Indexes
